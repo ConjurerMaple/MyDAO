@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Ajax异步数据交互</title>
+<script type="text/javascript">
+	window.onload = function() {
+		document.getElementById("sendBtn").addEventListener("click", function(e){
+			var info = document.getElementById("info").value;
+			if (info != "") {	//保证有数据的时候才发送
+				handleEcho(info);
+			}
+		}, false);
+	}
+	
+	var xmlHttpRequest; //定义一个变量，用于保存XMLHttpRequest对象
+	function createXmlHttpRequest() {	//创建XMLHttpRequest对象
+		if (window.XMLHttpRequest) {
+			xmlHttpRequest = new XMLHttpRequest();
+		} else {
+			xmlHttpRequest = new ActiveObject("Microsoft.XMLHttp");
+		}
+	}
+	
+	function handleEcho() {	//专门进行回调的通讯处理
+		createXmlHttpRequest();
+		xmlHttpRequest.open("post", "EchoServlet?msg=" + info);
+		xmlHttpRequest.send(null);	//将请求发送给服务器
+		//需要针对于服务器的请求进行回应处理,就需要设置回调函数
+		xmlHttpRequest.onreadystatechange = function() {
+			var txt = "readyState" + xmlHttpRequest.readyState + "内容" + xmlHttpRequest.responseText;
+			alert(txt);
+		}
+		
+	}
+</script>
+</head>
+<body>
+	<input type="text" name="info" id="info">
+	<input type="button" value="发送" id="sendBtn">
+	<div id="noteDiv"></div>
+</body>
+</html>
